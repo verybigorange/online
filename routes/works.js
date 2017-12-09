@@ -48,6 +48,13 @@ router.post('/id', function(req, res, next) {
     }
 });
 
+//查询需要首页显示的图片
+router.post('/home_show', function(req, res, next) {
+    query("SELECT * FROM works WHERE home_show='1'", [1], function(err,results,fields){
+        res.send(results);
+    });
+});
+
 //按首页展示查询
 router.post('/show', function(req, res, next) {
     query("SELECT * FROM works WHERE home_show='1'", [1], function(err,results,fields){  
@@ -77,13 +84,18 @@ router.post('/add', function(req, res, next) {
 //作品删除
 router.post('/delete', function(req, res, next) {
     let id = req.body.id;  //作品id
-    let pic_name = req.body.pic_name;  //数据库中的图片名称
-    query("DELETE FROM works WHERE work_id="+id+"", [1], function(err,results,fields){  
-        var url = path.join(__dirname,"../public/static/img/" + pic_name);
-        fs.unlink(url, (err) => {
-            if (err) throw err;
+       
+    query("DELETE FROM works WHERE work_id="+id+"", [1], function(err,results,fields){
+        if(req.body.pic_name){
+            let pic_name = req.body.pic_name;  //数据库中的图片名称
+            var url = path.join(__dirname,"../public/static/img/" + pic_name);
+            fs.unlink(url, (err) => {
+                if (err) throw err;
+                res.send("1")
+            });
+        }else{
             res.send("1")
-        });
+        } 
     });
 });
 

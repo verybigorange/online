@@ -3,11 +3,13 @@ var router = express.Router();
 
 var query=require("./mysql_pool");  
 
+var getNowFormatDate = require('../lib/getNowFormatDate.js')
+
 // 增加评论
 router.post('/add', function(req, res, next) {
     let id = req.body.id;      //作品id，为了关联作品
     let comment = req.body.comment;        //评论内容
-    let date = req.body.date;     //评论时间
+    let date = getNowFormatDate();     //评论时间
     query("INSERT INTO comment (work_id,comment,comment_date) VALUES ("+id+",'"+comment+"','"+date+"')", [1], function(err,results,fields){ 
         res.send("1");
     });
@@ -23,7 +25,7 @@ router.post('/', function(req, res, next) {
     // 当传了参数的就表示需要分页查询
     let str = limitNum?" LIMIT "+(currentPage-1)*limitNum+","+currentPage*limitNum:"";
     let obj = {};
-    query("SELECT count(*) FROM comment", [1], function(err,results,fields){ 
+    query("SELECT count(*) FROM comment WHERE work_id="+work_id, [1], function(err,results,fields){ 
         obj.count = results[0]['count(*)'];   // 总条数
         query("SELECT * FROM comment WHERE work_id="+work_id+str, [1], function(err,results,fields){
             obj.list = results
