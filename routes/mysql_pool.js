@@ -2,8 +2,8 @@ var mysql =  require('mysql');
 var pool =  mysql.createPool({
   host : "localhost",
   user : "root",
-  password: "123456",
-  database: 'admin',
+  password: "hexiaoqin",
+  database: 'hexiaoqin',
   port: 3306
 });
 
